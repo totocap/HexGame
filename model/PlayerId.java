@@ -1,6 +1,6 @@
-package hexGame.model;
+package model;
 
-import hexGame.util.Contract;
+import util.Contract;
 
 import java.awt.Color;
 

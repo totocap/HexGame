@@ -1,4 +1,4 @@
-package hexGame.util;
+package util;
 
 public final class Contract {
 	

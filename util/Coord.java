@@ -1,6 +1,6 @@
-package hexGame.util;
+package util;
 
-import hexGame.util.Contract;
+import util.Contract;
 
 /**
  * Une representation des coordonnees par une suite de caracteres 
