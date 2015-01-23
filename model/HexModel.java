@@ -15,6 +15,7 @@ import hexGame.util.Coord;
  * 			forall Coord c : (0, 0) .. (getSize() - 1, getSize() - 1) : 
  * 				isFreeTile(c)
  * 		getPositions(p) != null
+ * 		toString() != null
  * </pre>
  * 		
  * @cons
@@ -60,7 +61,9 @@ public interface HexModel extends ObservableModel {
 	/**
 	 * Teste si la case en c est vide.
 	 * @pre <pre>
-	 * 		c != null</pre>
+	 * 		c != null
+	 * 		0 <= c.getX() < getSize()
+	 * 		0 <= c.getY() < getSize()</pre>
 	 */
 	boolean isFreeTile(Coord c);
 	
@@ -86,7 +89,12 @@ public interface HexModel extends ObservableModel {
 	 * @pre <pre>
 	 * 		p != null</pre>
 	 */
-	Set<Coord> getPositions(PlayerId p); 
+	Set<Coord> getPositions(PlayerId p);
+	
+	/**
+	 * Affiche toutes les informations du plateau.
+	 */
+	String toString();
 	
 	// COMMANDES
 	
@@ -94,6 +102,8 @@ public interface HexModel extends ObservableModel {
 	 * Joue pour le joueur getPlayer() un mouvement en c.
 	 * @pre <pre>
 	 * 		c != null
+	 * 		0 <= c.getX() < getSize()
+	 * 		0 <= c.getY() < getSize()
 	 * 		isFreeTile(c)
 	 * 		!isFinished()</pre>
 	 * @post <pre>
