@@ -34,18 +34,9 @@ public enum PlayerId {
 	// CONSTRUCTEUR
 	
 	/**
-	 * Un playerId.
+	 * Un PlayerId.
 	 */
-	PlayerId(String defaultName, Color defaultColor) {
-		Contract.checkCondition(testContractName(defaultName), 
-				"Le premier argument est invalide : " 
-				+ (defaultName == null 
-					? "null" : defaultName));
-		Contract.checkCondition(testContractColor(defaultColor), 
-				"Le deuxième argument est invalide : " 
-				+ (defaultColor == null 
-					? "null" : defaultColor.toString()));
-		
+	private PlayerId(String defaultName, Color defaultColor) {
 		this.defaultName = defaultName;
 		this.defaultColor = defaultColor;
 	}
@@ -64,35 +55,5 @@ public enum PlayerId {
 	 */
 	public Color getDefaultColor() {
 		return defaultColor;
-	}
-	
-	// OUTILS
-	
-	/**
-	 * Teste si nameTest est valide et n'appartient pas déja a un autre joueur.
-	 */
-	private boolean testContractName(String nameTest) {
-		boolean result = (nameTest != null) && nameTest.length() > 0;
-		PlayerId[] idTab = PlayerId.values();
-		
-		for (int k = 0; k < idTab.length && result; ++k) {
-			result = (idTab[k].getDefaultName() != nameTest);
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * Test si colorTest est valide et n'appartient pas déja à un autre joueur.
-	 */
-	private boolean testContractColor(Color colorTest) {
-		PlayerId[] idTab = PlayerId.values();
-		boolean result = (colorTest != null);
-		
-		for (int k = 0; k < idTab.length && result; ++k) {
-			result = (idTab[k].getDefaultColor() != colorTest);
-		}
-		
-		return result;
 	}
 }

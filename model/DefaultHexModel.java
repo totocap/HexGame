@@ -29,11 +29,6 @@ public class DefaultHexModel implements HexModel {
 	 * L'indice dans les tableaux pour le BitSet de la co-accessibilité.
 	 */
 	private static final int CO_ACC_INDEX = 1;
-	/**
-	 * La taille du tableau devant contenir l'accessibilité et la 
-	 * co-accessibilités.
-	 */
-	private static final int ACC_TAB_SIZE = 3;
 	
 	/**
 	 * Les écouteurs du modèle.
@@ -72,7 +67,9 @@ public class DefaultHexModel implements HexModel {
 	 * 		isEmpty()</pre>
 	 */
 	public DefaultHexModel() {
+		listeners = new EventListenerList();
 		event = null;
+		
 		size = HexModel.MAX_SIZE_BOARD;
 		playerTurn = PlayerId.values()[0];
 		
@@ -129,9 +126,9 @@ public class DefaultHexModel implements HexModel {
 				"Ordonnée de la coordonnée non dans le plateau : " + c);
 		
 		int indice = convertCoordToIndex(c);
-		boolean result = false;
+		boolean result = true;
 		for (PlayerId p : PlayerId.values()) {
-			result &= playersBoard.get(p).get(indice);
+			result &= !playersBoard.get(p).get(indice);
 		}
 		return result;
 	}
@@ -152,7 +149,7 @@ public class DefaultHexModel implements HexModel {
 	 * Renvoie vrai si le plateau est vide.
 	 */
 	public boolean isEmpty() {
-		boolean result = false;
+		boolean result = true;
 		for (PlayerId p : PlayerId.values()) {
 			result &= playersBoard.get(p).cardinality() == 0;
 		}
@@ -185,10 +182,43 @@ public class DefaultHexModel implements HexModel {
 		BitSet bS = playersBoard.get(p);
 		Set<Coord> setC = new HashSet<Coord>();
 		// Parcourt tous les 1 du BitSet
-		for (int i = bS.nextSetBit(0); i >= 0; i = bS.nextSetBit(i+1)) {
+		for (int i = bS.nextSetBit(0); i >= 0; i = bS.nextSetBit(i + 1)) {
 		     setC.add(convertIndexToCoord(i));
 		 }
 		return setC;
+	}
+	
+	/**
+	 * Affiche toutes les informations du plateau.
+	 */
+	public String toString() {
+		String s = new String();
+		
+		s += "Taille du plateau : " + getSize() + "\n";
+		s += "Prochain joueur : " + getPlayer().getDefaultName() + "\n";
+		if (isEmpty()) {
+			s += "Plateau vide.\n";
+		}
+		s += "-------\n";
+		for (PlayerId p : PlayerId.values()) {
+			s += p.getDefaultName() + " : ";
+			s += "BitSet des pions : " + playersBoard.get(p) + "\n";
+			for (Coord c : getPositions(p)) {
+				s += c + ", ";
+			}
+			s += "\n";
+			s += "Accessibles : " + playersAcc.get(p)[ACC_INDEX] +"\n";
+			s += "CoAccessibles : " + playersAcc.get(p)[CO_ACC_INDEX] +"\n";
+			if (hasPlayerWon(p)) {
+				s += "Le joueur " + p.getDefaultName() + " a gagné.\n";
+			}
+			s += "------\n";
+		}
+		if (isFinished()) {
+			s += "Partie terminée.\n";
+		}
+		
+		return s;
 	}
 	
 	// COMMANDES
@@ -235,7 +265,7 @@ public class DefaultHexModel implements HexModel {
 		Contract.checkCondition(0 <= c.getY() && c.getY() < getSize(),
 				"Ordonnée de la coordonnée non dans le plateau : " + c);
 		Contract.checkCondition(isFreeTile(c),
-				"La case à la cordonnée " + c + "n'est pas vide.");
+				"La case à la cordonnée " + c + " n'est pas vide.");
 		Contract.checkCondition(!isFinished(),
 				"La partie est dejà terminée.");
 
@@ -326,23 +356,30 @@ public class DefaultHexModel implements HexModel {
 	 */
 	private List<Integer> getNeighboursIndex(int index) {
 		List<Integer> l = new ArrayList<Integer>();
+		BitSet bS = playersBoard.get(playerTurn);
 		
-		if (index - 1 >= 0) {
+		if (index - 1 >= 0
+				&& bS.get(index - 1)) {
 			l.add(index - 1);
 		}
-		if (index - getSize() + 1 >= 0) {
+		if (index - getSize() + 1 >= 0
+				&& bS.get(index - getSize() + 1)) {
 			l.add(index - getSize() + 1);
 		}
-		if (index - getSize() >= 0) {
+		if (index - getSize() >= 0
+				&& bS.get(index - getSize())) {
 			l.add(index - getSize());
 		}
-		if (index + 1 < getSize() * getSize()) {
+		if (index + 1 < getSize() * getSize()
+				&& bS.get(index + 1)) {
 			l.add(index + 1);
 		}
-		if (index + getSize() - 1 < getSize() * getSize()) {
+		if (index + getSize() - 1 < getSize() * getSize()
+				&& bS.get(index + getSize() - 1)) {
 			l.add(index + getSize() - 1);
 		} 
-		if (index + getSize() < getSize() * getSize()) {
+		if (index + getSize() < getSize() * getSize()
+				&& bS.get(index + getSize())) {
 			l.add(index + getSize());
 		}
 		
@@ -443,7 +480,7 @@ public class DefaultHexModel implements HexModel {
 	 * 		c != null</pre>
 	 */
 	private int convertCoordToIndex(Coord c) {
-		return c.getX() * getSize() + c.getY();
+		return c.getX() + c.getY() * getSize();
 	}
 	
 	/**
@@ -454,7 +491,7 @@ public class DefaultHexModel implements HexModel {
 	 * 		c != null</pre>
 	 */
 	private Coord convertIndexToCoord(int index) {
-		return new Coord(index / getSize(), index % getSize());
+		return new Coord(index % getSize(), index / getSize());
 	}
 	
 	// CLASSES INTERNES
