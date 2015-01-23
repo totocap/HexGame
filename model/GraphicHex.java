@@ -32,7 +32,11 @@ public class GraphicHex extends JComponent {
     }
     
     public void paintComponent(Graphics g) {
+        //Nombre d'hexagone sur la ligne verticale centrale
+        int taille = model.getSize();
         
+        // Taille verticale d'un hexagone
+        int sizeHex = PREFERRED_SIZE_VERTICAL / taille;
     }
     
     private void createView() {
