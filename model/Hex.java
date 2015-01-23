@@ -43,8 +43,6 @@ public class Hex {
     private JCheckBoxMenuItem francais;
     // Permet de changer la langue en anglais
     private JCheckBoxMenuItem anglais;
-    //Taille minimale d'un plateau
-    private static final int MIN_SIZE = 4;
     
     //CONSTRUCTEURS
     
@@ -79,10 +77,13 @@ public class Hex {
         type = new JMenu(" ");
         langue = new JMenu(" ");
         newGame = new JMenuItem(" ");
-        gameSize = new JCheckBoxMenuItem[11 - MIN_SIZE + 1];
-        for (int i = 0; i <= 11 - MIN_SIZE; i++) {
+        gameSize = new JCheckBoxMenuItem
+                [HexModel.MAX_SIZE_BOARD - HexModel.MIN_SIZE_BOARD + 1];
+        for (int i = 0; 
+                i <= HexModel.MAX_SIZE_BOARD - HexModel.MIN_SIZE_BOARD; i++) {
             gameSize[i] = new JCheckBoxMenuItem
-                    ((i + MIN_SIZE) + " x " + (i + MIN_SIZE));
+                    ((i + HexModel.MIN_SIZE_BOARD) 
+                    + " x " + (i + HexModel.MIN_SIZE_BOARD));
         }
         hint = new JMenu(" ");
         PvP = new JMenuItem(" ");
@@ -99,7 +100,8 @@ public class Hex {
         game.add(newGame);
         menuBar.add(game);
         
-        for (int i = 0; i <= 11 - MIN_SIZE; i++) {
+        for (int i = 0; 
+                i <= HexModel.MAX_SIZE_BOARD - HexModel.MIN_SIZE_BOARD; i++) {
             size.add(gameSize[i]);
         }
         menuBar.add(size);

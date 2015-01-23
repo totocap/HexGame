@@ -37,6 +37,8 @@ public class GraphicHex extends JComponent {
         
         // Taille verticale d'un hexagone
         int sizeHex = PREFERRED_SIZE_VERTICAL / taille;
+        
+        
     }
     
     private void createView() {
