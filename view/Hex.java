@@ -13,12 +13,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -26,6 +23,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -357,7 +355,7 @@ public class Hex {
         	m.addActionListener(alTmp);
         }
         
-        //
+        // 
         pvp.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				popUpError("Action non supporté", "Impossible d'éxécuter cette commande.");

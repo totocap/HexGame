@@ -19,6 +19,7 @@ import javax.swing.event.EventListenerList;
  * Implémente l'interface HexModel ; modélise un jeu de Hex pourvu d'une IA.
  */
 public class DefaultHexModel implements HexModel {
+	
 	// ATTRIBUTS
 	
 	/**
@@ -47,12 +48,12 @@ public class DefaultHexModel implements HexModel {
 	 */
 	private PlayerId playerTurn;
 	/**
-	 * Les BitSet pour tous les joueurs. Un 1 signifie qu'un pion se trouve à 
+	 * Les BitSet pour tous les joueurs. Un 1 signifiant qu'un pion se trouve à 
 	 * la case de coordonnées (indice / getSize(), indice % getSize()).
 	 */
 	private Map<PlayerId, BitSet> playersBoard;
 	/**
-	 * Les BitSets representant les pions accessibles des joueurs de PlayerId 
+	 * Les BitSets représentant les pions accessibles des joueurs de PlayerId 
 	 * ainsi que les positions des pions co-accessibles.
 	 */
 	private Map<PlayerId, BitSet[]>  playersAcc;
@@ -64,7 +65,8 @@ public class DefaultHexModel implements HexModel {
 	 * @post <pre>
 	 * 		getSize() == MAX_SIZE_BOARD
 	 * 		getPlayer() == PlayerId.values()[0]
-	 * 		isEmpty()</pre>
+	 * 		isEmpty()
+	 * </pre>
 	 */
 	public DefaultHexModel() {
 		listeners = new EventListenerList();
@@ -73,7 +75,7 @@ public class DefaultHexModel implements HexModel {
 		size = HexModel.MAX_SIZE_BOARD;
 		playerTurn = PlayerId.values()[0];
 		
-		// Plateaux vides, accessibilités et co-accessibilités.
+		// Plateaux vides, accessibilités.
 		playersBoard = new HashMap<PlayerId, BitSet>();
 		playersAcc = new HashMap<PlayerId, BitSet[]>();
 		for (PlayerId p : PlayerId.values()) {
@@ -85,7 +87,8 @@ public class DefaultHexModel implements HexModel {
 	/**
 	 * Calcule le prochain mouvement que jouerait l'IA et le renvoie.
 	 * @pre <pre>
-	 * 		!isFinished()</pre>
+	 * 		!isFinished()
+	 * </pre>
 	 */
 	public Coord getNextMoveAI() {
 		Contract.checkCondition(!isFinished(),
@@ -113,7 +116,8 @@ public class DefaultHexModel implements HexModel {
 	 * @pre <pre>
 	 * 		c != null
 	 * 		0 <= c.getX() < getSize()
-	 * 		0 <= c.getY() < getSize()</pre>
+	 * 		0 <= c.getY() < getSize()
+	 * </pre>
 	 */
 	public boolean isFreeTile(Coord c) {
 		Contract.checkCondition(c != null,
@@ -171,7 +175,8 @@ public class DefaultHexModel implements HexModel {
 	/**
 	 * Renvoie la liste des coordonnées où le joueur a des pièces.
 	 * @pre <pre>
-	 * 		p != null</pre>
+	 * 		p != null
+	 * </pre>
 	 */
 	public Set<Coord> getPositions(PlayerId p) {
 		Contract.checkCondition(p != null,
@@ -190,9 +195,7 @@ public class DefaultHexModel implements HexModel {
 	 * Affiche toutes les informations du plateau.
 	 */
 	public String toString() {
-		String s = new String();
-		
-		s += "Taille du plateau : " + getSize() + "\n";
+		String s = "Taille du plateau : " + getSize() + "\n";
 		s += "Prochain joueur : " + getPlayer().getDefaultName() + "\n";
 		if (isEmpty()) {
 			s += "Plateau vide.\n";
@@ -250,10 +253,12 @@ public class DefaultHexModel implements HexModel {
 	 * 		0 <= c.getX() < getSize()
 	 * 		0 <= c.getY() < getSize()
 	 * 		isFreeTile(c)
-	 * 		!isFinished()</pre>
+	 * 		!isFinished()
+	 * </pre>
 	 * @post <pre>
 	 * 		getPlayer() != old getPlayer()
-	 * 		c in getPositions(old getPlayer())</pre>
+	 * 		c in getPositions(old getPlayer())
+	 * </pre>
 	 */
 	public void nextMove(Coord c) {
 		Contract.checkCondition(c != null,
@@ -284,7 +289,8 @@ public class DefaultHexModel implements HexModel {
 	/**
 	 * Vide le plateau de jeu et donne le tour au joueur PlayerId.values()[0].
 	 * @post <pre>
-	 * 		isEmpty()</pre>
+	 * 		isEmpty()
+	 * </pre>
 	 */
 	public void reset() {
 		for (PlayerId p : PlayerId.values()) {
@@ -301,9 +307,11 @@ public class DefaultHexModel implements HexModel {
 	 * Défini la nouvelle taille du plateau de jeu.
 	 * @pre <pre>
 	 * 		MIN_SIZE_BOARD <= size <= MAX_SIZE_BOARD
-	 * 		isEmpty()</pre>
+	 * 		isEmpty()
+	 * </pre>
 	 * @post <pre>
-	 * 		getSize() == size</pre>
+	 * 		getSize() == size
+	 * </pre>
 	 */
 	public void setSize(int size) {
 		Contract.checkCondition(HexModel.MIN_SIZE_BOARD <= size
@@ -463,7 +471,8 @@ public class DefaultHexModel implements HexModel {
 	 * c.getX() = indice / getSize(), 
 	 * c.getY() = indice % getSize().
 	 * @pre <pre>
-	 * 		c != null</pre>
+	 * 		c != null
+	 * </pre>
 	 */
 	private Coord convertIndexToCoord(int index) {
 		return new Coord(index % getSize(), index / getSize());
