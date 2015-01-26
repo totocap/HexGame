@@ -1,6 +1,5 @@
 package hexGame.util;
 
-import hexGame.util.Contract;
 
 /**
  * Une representation des coordonnees par une suite de caracteres 
@@ -33,15 +32,15 @@ public class Coord {
 	/**
 	 * Constante definissant la premiere lettre.
 	 */
-	public static final char FIRST_CHAR = 'A';
+	public static final char FIRST_CHAR = '0';
 	/**
 	 * Constante definissant la taille de l'alphabet.
 	 */
-	public static final int ALPHABET_SIZE = 26;
+	public static final int ALPHABET_SIZE = 10;
 	/**
 	 * Constante definissant l'entier de depart.
 	 */
-	public static final int FIRST_INT = 1;
+	public static final int FIRST_INT = 0;
 	/**
 	 * Abscisse.
 	 */
@@ -127,7 +126,7 @@ public class Coord {
 	 * Fonction d'abstraction.
 	 */
 	public String toString() {
-		return "(" + getX() + ", " + getY() + ")";
+		return getAbstractX() + "." + getAbstractY();
 	}
 	
 	/**
@@ -167,7 +166,7 @@ public class Coord {
 	private static boolean isValidString(String str) {
 		boolean result = true;
 		int k = 0;
-		while(result && k < str.length()) {
+		while (result && k < str.length()) {
 			if (str.charAt(k) < FIRST_CHAR 
 					|| str.charAt(k) > ALPHABET_SIZE * FIRST_CHAR) {
 				result = false;
@@ -197,7 +196,7 @@ public class Coord {
 		int tmp = x % ALPHABET_SIZE; 
 		String str = String.valueOf(FIRST_CHAR + tmp);
 		x /= ALPHABET_SIZE;
-		while(x > 0) {
+		while (x > 0) {
 			tmp = x % ALPHABET_SIZE; 
 			str = String.valueOf(FIRST_CHAR + tmp) + str;
 			x /= ALPHABET_SIZE;
