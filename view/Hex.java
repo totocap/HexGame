@@ -2,7 +2,6 @@ package hexGame.view;
 
 import hexGame.model.DefaultHexModel;
 import hexGame.model.HexModel;
-
 import hexGame.util.language.ExpressionLanguage;
 import hexGame.util.language.ILanguage;
 import hexGame.util.language.Language;
@@ -11,11 +10,11 @@ import hexGame.util.language.SupportedLanguage;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.io.IOException;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -28,6 +27,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class Hex {
     
@@ -50,6 +51,14 @@ public class Hex {
      * Enregistrement de chaque composant language à son SupportedLanguage.
      */
     private Map<JComponent, SupportedLanguage> languageComponent;
+    /**
+     * Enregistrement de chaque boutons size avec la taille corespondante.
+     */
+    private HashMap<String, Integer> sizeItems;
+    /**
+     * Tableau des différents JMenuItem qui concerne la taille.
+     */
+    private JMenuItem[] sizeMenuItemArray;
 	/** 
 	 * Le language de l'appli.
 	 */
@@ -70,10 +79,6 @@ public class Hex {
      * Permet de refaire une partie.
      */
     private JMenuItem newGame;
-    /**
-     * Permet de changer la taille d'un plateau.
-     */
-    private JMenuItem[] gameSizeArray;
     /**
      * Permet le PVP.
      */
@@ -186,12 +191,13 @@ public class Hex {
         newGame = new JMenuItem();
         traductiveMenu.put(newGame, ExpressionLanguage.NEW_GAME);
         // liste des tailles disponibles
-        gameSizeArray = new JMenuItem[HexModel.MAX_SIZE_BOARD 
-                                 - HexModel.MIN_SIZE_BOARD + 1];
+        sizeItems = new HashMap<String, Integer>();
+        sizeMenuItemArray = new JMenuItem[HexModel.MAX_SIZE_BOARD - HexModel.MIN_SIZE_BOARD + 1];
         for (int i = HexModel.MIN_SIZE_BOARD; 
                 i <= HexModel.MAX_SIZE_BOARD; i++) {
-            gameSizeArray[i - HexModel.MIN_SIZE_BOARD] = 
-            		new JMenuItem((i) + " x " + (i));
+        	String str = (i) + " x " + (i);
+        	sizeMenuItemArray[i - HexModel.MIN_SIZE_BOARD] = new JMenuItem(str);
+            sizeItems.put(str, i);
         }
         // bouton d'aide de jeu
         hint = new JMenuItem();
@@ -217,6 +223,9 @@ public class Hex {
         group = new ButtonGroup();
         for (SupportedLanguage l : languageTabTmp) {
         	JMenuItem langueTmp = new JRadioButtonMenuItem(l.getName());
+        	if (l == INIT_LANGUAGE) {
+        		langueTmp.setSelected(true);
+        	}
         	languageArray[l.ordinal()] = langueTmp;
         	group.add(langueTmp);
         	languageComponent.put(langueTmp, l);
@@ -269,10 +278,8 @@ public class Hex {
 	        sizeMenu = new JMenu(); {
 		        traductiveMenu.put(sizeMenu, 
 		        		ExpressionLanguage.SIZE_BOARD_MENU);
-		        for (int i = 0; 
-		        		i <= HexModel.MAX_SIZE_BOARD - HexModel.MIN_SIZE_BOARD; 
-		        		i++) {
-		        	sizeMenu.add(gameSizeArray[i]);
+		        for (JMenuItem m : sizeMenuItemArray) {
+		        	sizeMenu.add(m);
 		        }
 	        }
 	        menuBar.add(sizeMenu);
@@ -304,9 +311,16 @@ public class Hex {
      * Crée le controleur.
      */
     private void createController() {
+    	// Action de fermeture de fenetre
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // 
+        model.addChangeListener(new ChangeListener(){
+        	public void stateChanged(ChangeEvent e) {
+				aiCommands.setVisible(pve.isSelected() || eve.isSelected());
+			}
+        });
+        
+        // Action de changement de langue
         ActionListener alTmp = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SupportedLanguage l = 
@@ -317,6 +331,74 @@ public class Hex {
         for (JMenuItem m : languageArray) {
         	m.addActionListener(alTmp);
         }
+        
+        // Action de nouvelle partie
+        newGame.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				model.reset();
+			}
+        });
+        
+        // Action de indice
+        hint.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				popUpError("Action non supporté", "Impossible d'éxécuter cette commande.");
+			}
+        });
+        
+    	// Action changement de taille
+        alTmp = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.setSize(sizeItems.get(
+						((JMenuItem)e.getSource()).getText()));
+			}
+        };
+        for (JMenuItem m : sizeMenuItemArray) {
+        	m.addActionListener(alTmp);
+        }
+        
+        //
+        pvp.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				popUpError("Action non supporté", "Impossible d'éxécuter cette commande.");
+			}
+        });
+        
+        //
+        pve.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				popUpError("Action non supporté", "Impossible d'éxécuter cette commande.");
+			}
+        });
+        
+        //
+        eve.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				popUpError("Action non supporté", "Impossible d'éxécuter cette commande.");
+			}
+        });
+        
+    	// Affiche les préférences
+    	settings.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				popUpError("Action non supporté", "Impossible d'éxécuter cette commande.");
+			}
+        });
+    	
+    	// Affiche la numérotation
+    	numberDisplay.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				popUpError("Action non supporté", "Impossible d'éxécuter cette commande.");
+			}
+        });
+    	
+    	// Joue le prochain coup de l'IA
+    	nextMoveAI.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				model.nextMove(model.getNextMoveAI());
+			}
+        });
+    	
     }
     
     /**
