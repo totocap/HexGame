@@ -205,8 +205,8 @@ public class DefaultHexModel implements HexModel {
 				s += c + ", ";
 			}
 			s += "\n";
-			s += "Accessibles : " + playersAcc.get(p)[ACC_INDEX] +"\n";
-			s += "CoAccessibles : " + playersAcc.get(p)[CO_ACC_INDEX] +"\n";
+			s += "Accessibles : " + playersAcc.get(p)[ACC_INDEX] + "\n";
+			s += "CoAccessibles : " + playersAcc.get(p)[CO_ACC_INDEX] + "\n";
 			if (hasPlayerWon(p)) {
 				s += "Le joueur " + p.getDefaultName() + " a gagné.\n";
 			}
