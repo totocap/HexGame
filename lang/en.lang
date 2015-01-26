@@ -1,0 +1,16 @@
+ai_next Next
+menu_display Display Option
+error_lang Language failure. The precedent language is still activated.
+error_lang_title Failure
+menu_eve AI vs AI
+menu_general General
+button_hint Hint
+menu_lang Language
+button_new New Game
+button_display_num Numbers
+menu_pve Player vs AI
+menu_pvp Player vs Player
+setup Settings
+menu_size Board Size
+menu_type Player/AI
+title Hex Game

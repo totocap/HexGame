@@ -1,0 +1,16 @@
+ai_next Suivant
+menu_display Affichage
+error_lang Erreur durant le changement de langage, la langue reste inchangée.
+error_lang_title Erreur
+menu_eve IA contre IA
+menu_general Général
+button_hint Indice
+menu_lang Langues
+button_new Nouvelle partie
+button_display_num Numérotation
+menu_pve Joueur contre IA
+menu_pvp Joueur contre Joueur
+setup Préférences
+menu_size Taille du plateau
+menu_type Mode de jeu
+title Jeu de Hex

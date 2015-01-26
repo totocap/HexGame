@@ -1,7 +1,5 @@
 package hexGame.model;
 
-import hexGame.util.Contract;
-
 import java.awt.Color;
 
 /**

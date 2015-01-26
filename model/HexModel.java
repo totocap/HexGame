@@ -33,11 +33,11 @@ public interface HexModel extends ObservableModel {
 	/**
 	 * La taille minimale d'un plateau de jeu.
 	 */
-	public static final int MIN_SIZE_BOARD = 4;
+	int MIN_SIZE_BOARD = 4;
 	/**
 	 * La taille maximale d'un plateau de jeu.
 	 */
-	public static final int MAX_SIZE_BOARD = 11;
+	int MAX_SIZE_BOARD = 11;
 	
 	// REQUETES
 	
