@@ -53,7 +53,7 @@ public class DefaultHexModel implements HexModel {
 	private Map<PlayerId, BitSet> playersBoard;
 	/**
 	 * Les BitSets representant les pions accessibles des joueurs de PlayerId 
-	 * ainsi que leurs pions co-accessibles.
+	 * ainsi que les positions des pions co-accessibles.
 	 */
 	private Map<PlayerId, BitSet[]>  playersAcc;
 	
@@ -78,9 +78,7 @@ public class DefaultHexModel implements HexModel {
 		playersAcc = new HashMap<PlayerId, BitSet[]>();
 		for (PlayerId p : PlayerId.values()) {
 			playersBoard.put(p, new BitSet(size * size));
-			playersAcc.put(p, new BitSet[]{
-					new BitSet(size * size), 
-					new BitSet(size * size)});
+			initAcc(p);
 		}
 	}
 
@@ -274,9 +272,8 @@ public class DefaultHexModel implements HexModel {
 		// c'était le tour
 		playersBoard.get(playerTurn).set(index);
 		
-		// On actualise les accessibles et les co-accessibles du même joueur
+		// On actualise les accessibles du même joueur
 		checkForAccessibility(index);
-		checkForCoAccessibility(index);
 		
 		// On passe au tour du joueur suivant
 		nextPlayer();
@@ -292,8 +289,7 @@ public class DefaultHexModel implements HexModel {
 	public void reset() {
 		for (PlayerId p : PlayerId.values()) {
 			playersBoard.get(p).clear();
-			playersAcc.get(p)[ACC_INDEX].clear();
-			playersAcc.get(p)[CO_ACC_INDEX].clear();
+			initAcc(p);
 		}
 		
 		playerTurn = PlayerId.values()[0];
@@ -317,7 +313,12 @@ public class DefaultHexModel implements HexModel {
 		Contract.checkCondition(isEmpty(),
 				"Le plateau n'est pas vide.");
 		
+		// On change la taille
 		this.size = size;
+		// On recalcule les co-accessibles pour chaque joueur
+		for (PlayerId p : PlayerId.values()) {
+			initAcc(p);
+		}
 		
 		fireStateChanged();
 	}
@@ -335,6 +336,16 @@ public class DefaultHexModel implements HexModel {
 			}
 			cL.stateChanged(event);
 		}
+	}
+	
+	/**
+	 * S'occupe d'initialiser les Maps d'accessibilité et de co-accessibilité 
+	 * pour le joueur p.
+	 */
+	private void initAcc(PlayerId p) {
+		playersAcc.put(p, new BitSet[]{
+				new BitSet(size * size), 
+				PlayerAcc.getCoAccIndex(this, p)});
 	}
 	
 	/**
@@ -423,42 +434,6 @@ public class DefaultHexModel implements HexModel {
 	}
 	
 	/**
-	 * Cherche si index est co-accessible ou bien peut le devenir, et si oui, 
-	 * l'ajoute au BitSet de co-accessibilité du joueur qui est en train de 
-	 * jouer.
-	 */
-	private void checkForCoAccessibility(int index) {
-		boolean isCoAccessible = false;
-		// Si jamais on trouve que le pion à l'index est co-accessible de base, 
-		// on l'ajoute ainsi que ses voisins.
-		for (int accN : PlayerAcc.getCoAccIndex(this, playerTurn)) {
-			if (index == accN) {
-				isCoAccessible = true;
-				break;
-			}
-		}
-		// Si jamais ce n'est pas le cas.
-		if (!isCoAccessible) {
-			// On regarde si par hasard un de ses voisins ne serait pas déjà 
-			// co-accessible.
-			BitSet bS = playersAcc.get(playerTurn)[CO_ACC_INDEX];
-			for (int i : getNeighboursIndex(index)) {
-				if (bS.get(i)) {
-					isCoAccessible = true;
-					break;
-				}
-			}
-		}
-		// Si on a trovué un voisin ou que index correspond à une position 
-		// co-accessible de départ, on ajoute index et ses voisins aux 
-		// co-accessibles.
-		if (isCoAccessible) {
-			putInSetNeighbours(playersAcc.get(playerTurn)[CO_ACC_INDEX], 
-					index);
-		}
-	}
-	
-	/**
 	 * Parcourt tous les voisins de l'index pour remplir le set avec les 
 	 * voisins qui ne sont pas encore dedans. Fonction récursive.
 	 */
@@ -531,18 +506,18 @@ public class DefaultHexModel implements HexModel {
 		}
 		
 		/**
-		 * Renvoie les indices potentiellement co-accessibles de départ pour le 
-		 * joueur p dans le plateau m.
+		 * Renvoie un BitSet des indices co-accessibles pour le joueur p dans 
+		 * le plateau m.
 		 */
-		private static List<Integer> getCoAccIndex(HexModel m, PlayerId p) {
-			List<Integer> l = new ArrayList<Integer>();
+		private static BitSet getCoAccIndex(HexModel m, PlayerId p) {
+			BitSet set = new BitSet(m.getSize() * m.getSize());
 			switch(p) {
 				case PLAYER1:
 					// Les indices co-accessibles du joueur 1 sont la derniere 
 					// ligne du plateau de jeu
 					for (int i = m.getSize() * (m.getSize() - 1); 
 							i < m.getSize() * m.getSize(); ++i) {
-						l.add(i);
+						set.set(i);
 					}
 					break;
 				case PLAYER2:
@@ -550,14 +525,14 @@ public class DefaultHexModel implements HexModel {
 					// colonne du plateau de jeu
 					for (int i = m.getSize() - 1; i < m.getSize() * m.getSize();
 							i += m.getSize()) {
-						l.add(i);
+						set.set(i);
 					}
 					break;
 				default:
 					System.err.println("Joueur inconnu.");
 					throw new RuntimeException();
 			}
-			return l;
+			return set;
 		}
 	}
 }
