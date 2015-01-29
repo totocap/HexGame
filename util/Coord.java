@@ -126,7 +126,7 @@ public class Coord {
 	 * Fonction d'abstraction.
 	 */
 	public String toString() {
-		return getAbstractX() + "." + getAbstractY();
+		return "(" + getX() + ", " + getY() + ")";
 	}
 	
 	/**
