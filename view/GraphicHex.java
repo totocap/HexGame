@@ -25,6 +25,12 @@ public class GraphicHex extends JComponent {
     // marge interne de part et d'autre du composant
     private static final int MARGIN = 40;
     
+    private Dimension dim;
+    private Dimension beginPoint;
+    private int pointu;
+    private int sizeOneSide;
+    private int sizeHexWidth;
+    
     //CONSTRUCTEUR
     
     public GraphicHex(HexModel model) {
@@ -34,6 +40,8 @@ public class GraphicHex extends JComponent {
         setMinimumSize(new Dimension(100, 100));
         createView();
         
+        dim = new Dimension();
+        beginPoint = new Dimension();
     }
     
     //REQUETES
@@ -50,7 +58,6 @@ public class GraphicHex extends JComponent {
     //COMMANDES
     
     public void paintComponent(Graphics g) {
-        Dimension dim = new Dimension();
         dim.setSize(getSize().getWidth() - 2 * MARGIN, 
                 getSize().getHeight() - 2 * MARGIN);
         
@@ -60,9 +67,6 @@ public class GraphicHex extends JComponent {
         //Le nombre de moitié d'hexagone sur tout le plateau à l'horizontale
         int numberHalfHex = sizeBoard * 2 + sizeBoard - 1;
         
-        //La taille de la largeur d'un hexagone
-        int sizeHexWidth;
-        Dimension beginPoint = new Dimension();
         //Tests empiriques pour le 3.1
         if (dim.getWidth() - dim.getWidth() / 3.1  < dim.getHeight() ) {
             sizeHexWidth = 2 * (int) (dim.getWidth() / numberHalfHex);
@@ -74,8 +78,8 @@ public class GraphicHex extends JComponent {
                     (dim.getWidth() - numberHalfHex * sizeHexWidth / 2) / 2 + MARGIN, MARGIN);
         }
         
-        int sizeOneSide = (int) (sizeHexWidth / Math.sqrt(3));
-        int pointu = (int) Math.sqrt(sizeHexWidth * sizeHexWidth / 4.5);
+        sizeOneSide = (int) (sizeHexWidth / Math.sqrt(3));
+        pointu = (int) Math.sqrt(sizeHexWidth * sizeHexWidth / 4.5);
         
         int charASCII;
         for (int i = 0; i < sizeBoard; i++) {
@@ -102,39 +106,17 @@ public class GraphicHex extends JComponent {
                         + (int) beginPoint.getWidth(), j * sizeHexWidth 
                         + (int) beginPoint.getHeight());
                 
+                
             }
         }
+        
         g.setColor(Color.BLUE);
         Set<Coord> coord = model.getPositions(PlayerId.PLAYER1);
-        int xCoord;
-        int yCoord;
-        for (Coord c : coord) {
-          //Calcule l'endroit ou sera l'abssice en fonction de la coordonnée
-            //  + le nombre de décalage entre les étages
-            xCoord = (int) beginPoint.getWidth() 
-                    + sizeHexWidth * (c.getX() + 1 - 1) + sizeHexWidth / 4
-                    + (sizeHexWidth / 2) * (c.getY() + 1 - 1);
-            //Calcule l'endroit ou sera la coordonnée en fonction de l'ordonnée
-            yCoord = (int) beginPoint.getHeight() + pointu 
-                    + (c.getY() + 1 - 1) * sizeOneSide + (c.getY() + 1 - 1) * pointu;
-            
-            g.fillOval(xCoord, yCoord, sizeHexWidth / 2, sizeHexWidth / 2);
-        }
+        drawMove(coord, g);
         
         g.setColor(Color.RED);
         coord = model.getPositions(PlayerId.PLAYER2);
-        for (Coord c : coord) {
-            //Calcule l'endroit ou sera l'abssice en fonction de la coordonnée
-            //  + le nombre de décalage entre les étages
-            xCoord = (int) beginPoint.getWidth() 
-                    + sizeHexWidth * (c.getX() + 1 - 1) + sizeHexWidth / 4
-                    + (sizeHexWidth / 2) * (c.getY() + 1 - 1);
-            //Calcule l'endroit ou sera la coordonnée en fonction de l'ordonnée
-            yCoord = (int) beginPoint.getHeight() + pointu 
-                    + (c.getY() + 1 - 1) * sizeOneSide + (c.getY() + 1 - 1) * pointu;
-            
-            g.fillOval(xCoord, yCoord, sizeHexWidth / 2, sizeHexWidth / 2);
-        }
+        drawMove(coord, g);
        
     }
     
@@ -157,8 +139,19 @@ public class GraphicHex extends JComponent {
     
     //OUTILS
     
-    private static void drawMove() {
-        
+    private void drawMove(Set<Coord> move, Graphics g) {
+        for (Coord c : move) {
+            //Calcule l'endroit ou sera l'abssice en fonction de la coordonnée
+            //  + le nombre de décalage entre les étages
+            int xCoord = (int) beginPoint.getWidth() 
+                    + sizeHexWidth * (c.getX()) + sizeHexWidth / 4
+                    + (sizeHexWidth / 2) * (c.getY());
+            //Calcule l'endroit ou sera la coordonnée en fonction de l'ordonnée
+            int yCoord = (int) beginPoint.getHeight() + pointu 
+                    + (c.getY()) * sizeOneSide + (c.getY()) * pointu;
+            
+            g.fillOval(xCoord, yCoord, sizeHexWidth / 2, sizeHexWidth / 2);
+        }
     }
     
 }
