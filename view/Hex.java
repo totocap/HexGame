@@ -2,6 +2,7 @@ package hexGame.view;
 
 import hexGame.model.DefaultHexModel;
 import hexGame.model.HexModel;
+import hexGame.model.PlayerId;
 import hexGame.util.language.ExpressionLanguage;
 import hexGame.util.language.ILanguage;
 import hexGame.util.language.Language;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -24,6 +26,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -40,17 +43,13 @@ public class Hex {
     /**
      * Enregistrement de chaque composant menu à son expression correspondante.
      */
-    private Map<JMenuItem, ExpressionLanguage> traductiveMenu;
-    /**
-     * Enregistrement de chaque composant menu à son expression correspondante.
-     */
-    private Map<JButton, ExpressionLanguage> traductiveButton;
+    private Map<AbstractButton, ExpressionLanguage> mapComponentExpression;
     /**
      * Enregistrement de chaque composant language à son SupportedLanguage.
      */
     private Map<JComponent, SupportedLanguage> languageComponent;
     /**
-     * Enregistrement de chaque boutons size avec la taille corespondante.
+     * Enregistrement de chaque boutons size avec la taille correspondante.
      */
     private HashMap<String, Integer> sizeItems;
     /**
@@ -184,10 +183,11 @@ public class Hex {
         graphic = new GraphicHex(model);
     	// Action de lancer le prochain mouvement d'IA
     	nextMoveAI = new JButton();
-        traductiveButton.put(nextMoveAI, ExpressionLanguage.AI_NEXT_MOVE);
+        mapComponentExpression.put(nextMoveAI, ExpressionLanguage.AI_NEXT_MOVE);
         // menuItem nouvelle partie
         newGame = new JMenuItem();
-        traductiveMenu.put(newGame, ExpressionLanguage.NEW_GAME);
+        newGame.setAccelerator(KeyStroke.getKeyStroke('n'));
+        mapComponentExpression.put(newGame, ExpressionLanguage.NEW_GAME);
         // liste des tailles disponibles
         sizeItems = new HashMap<String, Integer>();
         sizeMenuItemArray = new JMenuItem[HexModel.MAX_SIZE_BOARD - HexModel.MIN_SIZE_BOARD + 1];
@@ -199,19 +199,22 @@ public class Hex {
         }
         // bouton d'aide de jeu
         hint = new JMenuItem();
-        traductiveMenu.put(hint, ExpressionLanguage.HINT_BUTTON);
+        hint.setAccelerator(KeyStroke.getKeyStroke('i'));
+        mapComponentExpression.put(hint, ExpressionLanguage.HINT_BUTTON);
         // boutons de type de jeu.
         ButtonGroup group = new ButtonGroup(); {
 	        pvp = new JRadioButtonMenuItem();
-	        traductiveMenu.put(pvp, ExpressionLanguage.PVP_MENU_ITEM);
+	        mapComponentExpression.put(pvp, ExpressionLanguage.PVP_MENU_ITEM);
 	        group.add(pvp);
 	        
 	        pve = new JRadioButtonMenuItem();
-	        traductiveMenu.put(pve, ExpressionLanguage.PVE_MENU_ITEM);
+	        mapComponentExpression.put(pve, ExpressionLanguage.PVE_MENU_ITEM);
 	        group.add(pve);
+	        // On commence en Joueur contre IA
+	        pve.setSelected(true);
 	        
 	        eve = new JRadioButtonMenuItem();
-	        traductiveMenu.put(eve, ExpressionLanguage.EVE_MENU_ITEM);
+	        mapComponentExpression.put(eve, ExpressionLanguage.EVE_MENU_ITEM);
 	        group.add(eve);
         }
         
@@ -221,21 +224,21 @@ public class Hex {
         group = new ButtonGroup();
         for (SupportedLanguage l : languageTabTmp) {
         	JMenuItem langueTmp = new JRadioButtonMenuItem(l.getName());
-        	if (l == INIT_LANGUAGE) {
-        		langueTmp.setSelected(true);
-        	}
         	languageArray[l.ordinal()] = langueTmp;
         	group.add(langueTmp);
         	languageComponent.put(langueTmp, l);
         }
+        // On selectionne le langage de départ
+        languageArray[INIT_LANGUAGE.ordinal()].setSelected(true);
         
         // boutons des préférences
     	settings = new JMenuItem();
-    	traductiveMenu.put(settings, ExpressionLanguage.SETTINGS_MENU_ITEM);
+    	mapComponentExpression.put(settings, ExpressionLanguage.SETTINGS_MENU_ITEM);
     	
     	// boutons d'affichage des numéros de coups
     	numberDisplay = new JRadioButtonMenuItem();
-    	traductiveMenu.put(numberDisplay, 
+    	numberDisplay.setAccelerator(KeyStroke.getKeyStroke('d'));
+    	mapComponentExpression.put(numberDisplay, 
     			ExpressionLanguage.NUMBER_DISPLAY_MENU_ITEM);
     }
     
@@ -256,7 +259,7 @@ public class Hex {
         JMenuBar menuBar = new JMenuBar(); {
 	        // onglet général
 	        generalMenu = new JMenu(); {
-	        	traductiveMenu.put(generalMenu, 
+	        	mapComponentExpression.put(generalMenu, 
 	        			ExpressionLanguage.GENERAL_MENU); 
 	        	generalMenu.add(newGame);
 	        	generalMenu.add(hint);
@@ -266,7 +269,7 @@ public class Hex {
 	        
 	        // onglet affichage
 	        displayMenu = new JMenu(); {
-	        	traductiveMenu.put(displayMenu, 
+	        	mapComponentExpression.put(displayMenu, 
 	        			ExpressionLanguage.DISPLAY_MENU); 
 	        	displayMenu.add(numberDisplay);
 	        }
@@ -274,7 +277,7 @@ public class Hex {
 	        
 	        // onglet taille
 	        sizeMenu = new JMenu(); {
-		        traductiveMenu.put(sizeMenu, 
+	        	mapComponentExpression.put(sizeMenu, 
 		        		ExpressionLanguage.SIZE_BOARD_MENU);
 		        for (JMenuItem m : sizeMenuItemArray) {
 		        	sizeMenu.add(m);
@@ -284,7 +287,7 @@ public class Hex {
 
 	        // onglet type de partie
 	        typeMenu = new JMenu(); {
-	        	traductiveMenu.put(typeMenu, 
+	        	mapComponentExpression.put(typeMenu, 
 	        			ExpressionLanguage.TYPE_OPPONENT_MENU); 
 	        	typeMenu.add(pvp);
 	        	typeMenu.add(pve);
@@ -294,7 +297,7 @@ public class Hex {
 	        
 	        // onglet langue
 	        languageMenu = new JMenu(); {
-	        	traductiveMenu.put(languageMenu, 
+	        	mapComponentExpression.put(languageMenu, 
 	        			ExpressionLanguage.LANGUAGE_MENU); 
 		        for (JMenuItem l : languageArray) {
 		        	languageMenu.add(l);
@@ -312,9 +315,19 @@ public class Hex {
     	// Action de fermeture de fenetre
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        model.addChangeListener(new ChangeListener(){
-        	public void stateChanged(ChangeEvent e) {
-				aiCommands.setVisible(pve.isSelected() || eve.isSelected());
+        // Observateur du modèle
+        model.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				// Blocage si c'est au joueur 2 de jouer ou si 
+				// c'est de l'IA vers IA
+				if ((pve.isSelected() && model.getPlayer() == PlayerId.PLAYER2)
+						|| eve.isSelected()) {
+					// Bloquer les clics vers le plateau
+					// graphic.setClick(false);
+				} else {
+					// Autoriser les clics vers le plateau
+					// graphic.setClick(true);
+				}
 			}
         });
         
@@ -326,8 +339,8 @@ public class Hex {
 				changeLanguage(l);
 			}
         };
-        for (JMenuItem m : languageArray) {
-        	m.addActionListener(alTmp);
+        for (JMenuItem languageChoice : languageArray) {
+        	languageChoice.addActionListener(alTmp);
         }
         
         // Action de nouvelle partie
@@ -340,7 +353,9 @@ public class Hex {
         // Action de indice
         hint.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				popUpError("Action non supporté", "Impossible d'éxécuter cette commande.");
+				popUpError("Action non supportée", "Impossible d'exécuter cette commande.");
+				// Un truc du genre :
+				// graphic.indicate(model.getNextMoveAI());
 			}
         });
         
@@ -351,49 +366,59 @@ public class Hex {
 						((JMenuItem)e.getSource()).getText()));
 			}
         };
-        for (JMenuItem m : sizeMenuItemArray) {
-        	m.addActionListener(alTmp);
+        for (JMenuItem sizeMenu : sizeMenuItemArray) {
+        	sizeMenu.addActionListener(alTmp);
         }
         
         // 
+        // Joueur contre joueur
+        // Désactivation des commandes pour gérer l'IA
         pvp.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				popUpError("Action non supporté", "Impossible d'éxécuter cette commande.");
+				popUpError("Action non supportée", "Impossible d'exécuter cette commande.");
+				aiCommands.setVisible(false);
 			}
         });
         
-        //
+        // Joueur contre IA, bonne chance
+        // Activation des commandes pour gérer l'IA
         pve.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				popUpError("Action non supporté", "Impossible d'éxécuter cette commande.");
+				popUpError("Action non supportée", "Impossible d'exécuter cette commande.");
+				aiCommands.setVisible(true);
 			}
         });
         
-        //
+        // IA contre IA, fin du monde
+        // Activation des commandes pour gérer les IAs.
+        // N'essayez pas de les contrôler. Elles sont plus fortes que vous.
         eve.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				popUpError("Action non supporté", "Impossible d'éxécuter cette commande.");
+				popUpError("Action non supportée", "Impossible d'exécuter cette commande.");
+				aiCommands.setVisible(true);
 			}
         });
         
     	// Affiche les préférences
     	settings.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				popUpError("Action non supporté", "Impossible d'éxécuter cette commande.");
+				popUpError("Action non supportée", "Impossible d'exécuter cette commande.");
 			}
         });
     	
-    	// Affiche la numérotation
+    	// Affiche la numérotation dans chaque coup joué
     	numberDisplay.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				popUpError("Action non supporté", "Impossible d'éxécuter cette commande.");
+				popUpError("Action non supportée", "Impossible d'exécuter cette commande.");
 			}
         });
     	
     	// Joue le prochain coup de l'IA
     	nextMoveAI.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				model.nextMove(model.getNextMoveAI());
+				popUpError("Action non supportée",
+						"Intelligence artificielle pas encore implémentée par Totocap.");
+				//model.nextMove(model.getNextMoveAI());
 			}
         });
     	
@@ -432,11 +457,8 @@ public class Hex {
      */
     private void forceChangeLanguageComponent() {
     	mainFrame.setTitle(language.getText(ExpressionLanguage.WINDOW_TITLE));
-    	for (JMenuItem menuItem : traductiveMenu.keySet()) {
-    		menuItem.setText(language.getText(traductiveMenu.get(menuItem)));
-    	}
-    	for (JButton button : traductiveButton.keySet()) {
-    		button.setText(language.getText(traductiveButton.get(button)));
+    	for (AbstractButton button : mapComponentExpression.keySet()) {
+    		button.setText(language.getText(mapComponentExpression.get(button)));
     	}
     }
 
@@ -445,8 +467,7 @@ public class Hex {
      * S'il n'arrive pas à charger, le programme quitte sur un message d'erreur.
      */
     private void initLanguage(SupportedLanguage lInit) {
-    	traductiveMenu = new HashMap<JMenuItem, ExpressionLanguage>();
-    	traductiveButton = new HashMap<JButton, ExpressionLanguage>();
+    	mapComponentExpression = new HashMap<AbstractButton, ExpressionLanguage>();
     	languageComponent = new HashMap<JComponent, SupportedLanguage>();
 	    try {
 			language = new Language(lInit);
