@@ -191,11 +191,11 @@ public class GraphicHex extends JComponent {
     		}
     		for (Coord c : model.getPositions(p)) {
     			drawPoly(g,
-                		beginPoint.width + c.getY() * sizeHexWidth + c.getX() * sizeHexWidth / 2 + 1,
-                		beginPoint.height + c.getX() * (sizeOneSide + pointu) + 1,
+                		beginPoint.width + c.getY() * sizeHexWidth + c.getX() * sizeHexWidth / 2,
+                		beginPoint.height + c.getX() * (sizeOneSide + pointu),
                 		sizeOneSide,
                 		(sizeHexWidth - 1) / 2,
-                		pointu - 1,
+                		pointu,
                 		true);
     		}
     	}
