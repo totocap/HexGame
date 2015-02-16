@@ -9,6 +9,7 @@ import hexGame.util.language.Language;
 import hexGame.util.language.SupportedLanguage;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -247,6 +249,7 @@ public class Hex {
      */
     private void placeComponents() {
     	// graphic
+		graphic.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         mainFrame.add(graphic, BorderLayout.CENTER);
         
         // option IA
@@ -315,7 +318,6 @@ public class Hex {
     	// Action de fermeture de fenetre
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // Observateur du modèle
         model.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				// Blocage si c'est au joueur 2 de jouer ou si 
@@ -370,7 +372,6 @@ public class Hex {
         	sizeMenu.addActionListener(alTmp);
         }
         
-        // 
         // Joueur contre joueur
         // Désactivation des commandes pour gérer l'IA
         pvp.addActionListener(new ActionListener(){

@@ -3,12 +3,11 @@ package hexGame.model;
 import java.awt.Color;
 /**
  * La représentation d'un joueur et les préférences de ce dernier. 
- * @inv <pre>
+ * @inv
  * 		getId() != null
  * 		getName() != null
  * 		getName().length() > 0
  * 		getColorPieces() != null
- * </pre>
  */
 public interface Player {
 	

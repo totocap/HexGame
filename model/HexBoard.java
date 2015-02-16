@@ -4,11 +4,11 @@ import java.util.Set;
 
 import hexGame.util.Coord;
 
-/** 
- * Specifie un modele pour le jeu de Hex.
+/**
+ * Specifie un plateau de jeu pour le jeu de Hex.
+ * <em>Atention, aucun contrat ne sera vérifié ici.</em>
  * @inv <pre>
- * 		MIN_SIZE_BOARD <= getSize() <= MAX_SIZE_BOARD
- *		getNextMoveAI() != null
+ * 		HexModel.MIN_SIZE_BOARD <= size <= HexModel.MAX_SIZE_BOARD
  * 		getPlayer() != null 
  *		isFreeTile(getNextMoveAI())
  * 		isFinished() <=> Il existe un unique PlayerId p tel que hasPlayerWon(p)
@@ -18,39 +18,22 @@ import hexGame.util.Coord;
  * 		getPositions(p) != null
  * 		toString() != null
  * </pre>
- * 		
  * @cons <pre>
- * 		Construit un modele representant un jeu de hex fournit avec une IA.
- * 		$ARGS$ /
- * 		$PRE$ /
+ * 		Construit un plateau de jeu pour le jeu de Hex.
+ * 		$ARGS$
+ * 			int size
+ * 		$PRE$
+ * 			HexModel.MIN_SIZE_BOARD <= size <= HexModel.MAX_SIZE_BOARD
  * 		$POST$
- * 			getSize() == MAX_SIZE_BOARD
+ * 			getSize() == size
  * 			getPlayer() == PlayerId.values()[0]
  * 			isEmpty()</pre>
  */
-public interface HexModel extends ObservableModel {
-	// ATTRIBUTS
-	
-	/**
-	 * La taille minimale d'un plateau de jeu.
-	 */
-	int MIN_SIZE_BOARD = 4;
-	/**
-	 * La taille maximale d'un plateau de jeu.
-	 */
-	int MAX_SIZE_BOARD = 11;
-	
+public interface HexBoard {
 	// REQUETES
 	
 	/**
-	 * Calcule le prochain mouvement que jouerait l'IA et le renvoie.
-	 * @pre <pre>
-	 * 		!isFinished()</pre>
-	 */
-	Coord getNextMoveAI();
-	
-	/**
-	 * Retourne la taille du plateau.
+	 * Retourne la taille actuelle du plateau.
 	 */
 	int getSize();
 	
@@ -93,7 +76,7 @@ public interface HexModel extends ObservableModel {
 	Set<Coord> getPositions(PlayerId p);
 	
 	/**
-	 * Affiche toutes les informations du modele.
+	 * Affiche toutes les informations du plateau.
 	 */
 	String toString();
 	
@@ -123,7 +106,7 @@ public interface HexModel extends ObservableModel {
 	/**
 	 * Défini la nouvelle taille du plateau de jeu.
 	 * @pre <pre>
-	 * 		MIN_SIZE_BOARD <= size <= MAX_SIZE_BOARD
+	 * 		HexModel.MIN_SIZE_BOARD <= size <= HexModel.MAX_SIZE_BOARD
 	 * 		isEmpty()</pre>
 	 * @post <pre>
 	 * 		getSize() == size</pre>
