@@ -14,8 +14,8 @@ import java.awt.Color;
  * 					==> id1 == id2
  */
 public enum PlayerId {
-	PLAYER1("Blanc", Color.WHITE),
-	PLAYER2("Noir", Color.BLACK);
+	PLAYER1("Blanc", Color.BLUE),
+	PLAYER2("Noir", Color.RED);
 	
 	// ATTRIBUTS
 	

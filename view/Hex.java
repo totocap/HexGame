@@ -9,14 +9,15 @@ import hexGame.util.language.Language;
 import hexGame.util.language.SupportedLanguage;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -248,6 +249,7 @@ public class Hex {
      */
     private void placeComponents() {
     	// graphic
+		graphic.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         mainFrame.add(graphic, BorderLayout.CENTER);
         
         // option IA

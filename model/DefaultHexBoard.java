@@ -2,11 +2,9 @@ package hexGame.model;
 
 import hexGame.util.Coord;
 
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 

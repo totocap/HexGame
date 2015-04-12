@@ -36,11 +36,11 @@ public class Coord {
 	/**
 	 * Constante definissant la taille de l'alphabet.
 	 */
-	public static final int ALPHABET_SIZE = 10;
+	public static final int ALPHABET_SIZE = 2;
 	/**
 	 * Constante definissant l'entier de depart.
 	 */
-	public static final int FIRST_INT = 0;
+	public static final int FIRST_INT = 1;
 	/**
 	 * Abscisse.
 	 */
@@ -126,7 +126,7 @@ public class Coord {
 	 * Fonction d'abstraction.
 	 */
 	public String toString() {
-		return "(" + getX() + ", " + getY() + ")";
+		return "(" + getAbstractX() + ", " + getAbstractY() + ")";
 	}
 	
 	/**
@@ -194,11 +194,11 @@ public class Coord {
 	 */
 	private static String toStr(int x) {
 		int tmp = x % ALPHABET_SIZE; 
-		String str = String.valueOf(FIRST_CHAR + tmp);
+		String str = String.valueOf((char)(tmp + FIRST_CHAR));
 		x /= ALPHABET_SIZE;
 		while (x > 0) {
 			tmp = x % ALPHABET_SIZE; 
-			str = String.valueOf(FIRST_CHAR + tmp) + str;
+			str = String.valueOf((char)(tmp + FIRST_CHAR)) + str;
 			x /= ALPHABET_SIZE;
 		}
 		return str;
